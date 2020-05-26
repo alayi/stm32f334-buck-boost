@@ -1,32 +1,5 @@
-# Prerequisites
-*.d
+# Исключил папку превью из пуша
+hardware/project/__Previews
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Исключил из пуша папку history для AD
+hardware/project/History
