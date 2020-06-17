@@ -3,3 +3,7 @@ hardware/project/__Previews
 
 # Исключил из пуша папку history для AD
 hardware/project/History
+
+# Исключил дебаг файлы от VS Code
+firmware/firmware/.vscode/.cortex-debug.peripherals.state.json
+firmware/firmware/.vscode/.cortex-debug.registers.state.json
