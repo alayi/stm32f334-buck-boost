@@ -30,7 +30,7 @@ void Hrpwm::Init() {
     HRTIM1->sTimerxRegs[0].DTxR  |= HRTIM_DTR_DTFSLK | HRTIM_DTR_DTRSLK;                    // Lock value dead-time
     HRTIM1->sTimerxRegs[1].OUTxR |= HRTIM_OUTR_DTEN;                                        
     HRTIM1->sTimerxRegs[1].DTxR  |= (3 << HRTIM_DTR_DTPRSC_Pos);                            
-    HRTIM1->sTimerxRegs[1].DTxR  |= (1 << HRTIM_DTR_DTR_Pos) | (1 << HRTIM_DTR_DTF_Pos);    
+    HRTIM1->sTimerxRegs[1].DTxR  |= (5 << HRTIM_DTR_DTR_Pos) | (5 << HRTIM_DTR_DTF_Pos);    
     HRTIM1->sTimerxRegs[1].DTxR  |= HRTIM_DTR_DTFSLK | HRTIM_DTR_DTRSLK;                    
 
     HRTIM1->sTimerxRegs[0].SETx1R |= HRTIM_SET1R_PER;	                                    // Event forces the output to active state
