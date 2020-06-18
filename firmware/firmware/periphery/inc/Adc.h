@@ -20,9 +20,6 @@
 /********************************************************************************
  * Class ADC
  * 
- * Divider input voltage: 39 kOhm / 10 kOhm = 4.9
- * Divider output voltage: 39 kOhm / 10 kOhm = 4.9
- * 
  * Pin voltage input    - PA0   - ADC1 IN1
  * Pin current input    - PA1   - ADC1 IN2
  * Pin voltage output   - PA2   - ADC1 IN3
@@ -35,19 +32,14 @@ class Adc {
     public:
         constexpr static uint16_t sizeBuffer = 50;
 
-        static float inputVoltage [sizeBuffer];
-        static float inputCurrent [sizeBuffer];
-        static float outputVoltage [sizeBuffer];
-        static float outputCurrent [sizeBuffer];
+        static uint16_t inputVoltage;
+        static uint16_t inputCurrent;
+        static uint16_t outputVoltage;
+        static uint16_t outputCurrent;
         static uint16_t step;
 
     public:
         static void Init();
-
-    private:
-        constexpr static float voltageDivInput = 19.6078f;
-        constexpr static float voltageDivOutput12V = 4.1667f;
-        constexpr static float voltageDivOutput24V = 8.3333f;
 
     private:    
         static void GpioInit();

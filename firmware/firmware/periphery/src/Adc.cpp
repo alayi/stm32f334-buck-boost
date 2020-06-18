@@ -5,10 +5,14 @@
 
 #include "Adc.h"
 
-float Adc::inputVoltage [Adc::sizeBuffer];
-float Adc::inputCurrent [Adc::sizeBuffer];
-float Adc::outputVoltage [Adc::sizeBuffer];
-float Adc::outputCurrent [Adc::sizeBuffer];
+/********************************************************************************
+ * Variables
+ ********************************************************************************/
+
+uint16_t Adc::inputVoltage;
+uint16_t Adc::inputCurrent;
+uint16_t Adc::outputVoltage;
+uint16_t Adc::outputCurrent;
 
 uint16_t Adc::step = 0;
 
@@ -35,7 +39,6 @@ void Adc::Init() {
 }
 
 void Adc::GpioInit() {
-    Gpio::Init<14>(GPIOB, Gpio::Mode::output, Gpio::Type::PP);
     Gpio::Init<0,1,2,3,5>(GPIOA, Gpio::Mode::input);
 }
 
@@ -50,7 +53,7 @@ void Adc::StartCallibrationAdc() {
 
 void Adc::InitTimerEvent() {
     RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
-    TIM6->PSC = 36000-1;
+    TIM6->PSC = 36-1;
     TIM6->ARR = 1000;
     TIM6->CR2 |= TIM_CR2_MMS_1;         // Enable generation TRGO for ADC
     TIM6->CR1  |= TIM_CR1_CEN;
@@ -61,13 +64,15 @@ void Adc::InitTimerEvent() {
  ********************************************************************************/
 
 void sAdc::handler (void) {
-    ADC1->ISR |= ADC_ISR_JEOS;
-    Gpio::Toggle<15>(GPIOA);
-
-    Adc::inputVoltage[Adc::step++] = ADC1->JDR1;
-    Adc::inputCurrent[Adc::step++] = ADC1->JDR2;
-    Adc::outputCurrent[Adc::step++] = ADC1->JDR3;
-    Adc::outputVoltage[Adc::step++] = ADC1->JDR4;
-
-    if (Adc::step >= 50) { Adc::step = 0; } 
+    ADC1->ISR |= ADC_ISR_JEOS;  
+ 
+    Adc::inputVoltage = ADC1->JDR1;
+    Adc::inputCurrent = ADC1->JDR2;
+    Adc::outputVoltage = ADC1->JDR3;
+    Adc::outputCurrent = ADC1->JDR4;
+/*
+    Adc::step++;
+    if (Adc::step >= Adc::sizeBuffer) { Adc::step = 0; }
+*/
+    Gpio::Set<14>(GPIOB); 
 }
