@@ -1,9 +1,9 @@
 /********************************************************************************
- * class        Setting periphery                                               *
+ * Class        Application logic for dc/dc buck-boost                          *
  *                                                                              *
- * file         Periphery.h                                                     *
+ * file         Application.h                                                   *
  * author       Ilya Galkin                                                     *
- * date         17.06.2020                                                      *
+ * date         18.06.2020                                                      *
  *                                                                              *
  ********************************************************************************/
 
@@ -16,21 +16,16 @@
 #include "stm32f3xx.h"
 #include "startupF334.h"
 
-#include "Led.h"
+#include "Pid.h"
+
+#include "Feedback.h"
+
 #include "Hrpwm.h"
-#include "Clock.h"
-#include "Adc.h"
 
 /********************************************************************************
- * Class Periphery
+ * Class 
  ********************************************************************************/
 
-class Periphery {
-    public:
-        static void Init (void) {
-            Clock::Init();
-            Led::Init();
-            Hrpwm::Init();
-            Adc::Init();
-        }
+class Application {
+
 };

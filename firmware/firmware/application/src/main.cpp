@@ -13,7 +13,7 @@
  ********************************************************************************/
 
 #include "main.h"
-
+float temp = 0.0f;
 /********************************************************************************
  * Main program body
  ********************************************************************************/
@@ -27,11 +27,15 @@ int main (void) {
     Led::Off(Led::TypeSignal::overVoltageProtection);
     Led::Off(Led::TypeSignal::overTemperatureProtection);
 
-    Hrpwm::DriverControl(Hrpwm::Channel::boost, Hrpwm::Status::disable);
+    Hrpwm::DriverControl(Hrpwm::Channel::boost, Hrpwm::Status::enable);
     Hrpwm::DriverControl(Hrpwm::Channel::buck, Hrpwm::Status::enable);
 
     Hrpwm::SetDuty(Hrpwm::Channel::buck, 15000);   
-    Hrpwm::SetDuty(Hrpwm::Channel::boost, 44800); 
+    Hrpwm::SetDuty(Hrpwm::Channel::boost, 29800); 
 
-    while(1) {}
+    while(1) {
+        temp = Feedback::inputVoltage();
+        if (temp > 9) { Led::On(Led::TypeSignal::overTemperatureProtection); }
+        if (temp < 9) { Led::Off(Led::TypeSignal::overTemperatureProtection); }
+    }
 }
