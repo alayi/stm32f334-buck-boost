@@ -13,10 +13,7 @@
  ********************************************************************************/
 
 #include "main.h"
-float tempInVoltage = 0.0f;
-float tempInCurrent = 0.0f;
-float tempOutVoltage = 0.0f;
-float tempOutCurrent = 0.0f;
+
 /********************************************************************************
  * Main program body
  ********************************************************************************/
@@ -26,10 +23,5 @@ int main (void) {
     Periphery::Init();
     Application::Init();
 
-    while(1) {
-        tempInVoltage = Feedback::inputVoltage();
-        tempInCurrent = Feedback::inputCurrent();
-        tempOutVoltage = Feedback::outputVoltage();
-        tempOutCurrent = Feedback::outputCurrent();
-    }
+    while(1) {}
 }
