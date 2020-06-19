@@ -33,11 +33,17 @@ class Application {
             static bool errorUVLO;
         };
 
+        static float limitUVLO;         
+        static float referenceOutputVoltage;
+        
+        constexpr static uint16_t boostFixDuty = 6000;
+        static uint16_t duty;
+
     public:
         static void Init();
+        static void SetUserSettings (float uvlo, float referenceVoltage);
         
     private:
         static void StartApplicationTimer();
         static bool UVLO (float reference);
-
 };
