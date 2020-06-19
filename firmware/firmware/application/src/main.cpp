@@ -13,7 +13,10 @@
  ********************************************************************************/
 
 #include "main.h"
-float temp = 0.0f;
+float tempInVoltage = 0.0f;
+float tempInCurrent = 0.0f;
+float tempOutVoltage = 0.0f;
+float tempOutCurrent = 0.0f;
 /********************************************************************************
  * Main program body
  ********************************************************************************/
@@ -34,8 +37,9 @@ int main (void) {
     Hrpwm::SetDuty(Hrpwm::Channel::boost, 29800); 
 
     while(1) {
-        temp = Feedback::inputVoltage();
-        if (temp > 9) { Led::On(Led::TypeSignal::overTemperatureProtection); }
-        if (temp < 9) { Led::Off(Led::TypeSignal::overTemperatureProtection); }
+        tempInVoltage = Feedback::inputVoltage();
+        tempInCurrent = Feedback::inputCurrent();
+        tempOutVoltage = Feedback::outputVoltage();
+        tempOutCurrent = Feedback::outputCurrent();
     }
 }
