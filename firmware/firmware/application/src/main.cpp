@@ -24,17 +24,7 @@ float tempOutCurrent = 0.0f;
 int main (void) {
 
     Periphery::Init();
-
-    Led::On(Led::TypeSignal::status);
-    Led::Off(Led::TypeSignal::overCurrentProtection);
-    Led::Off(Led::TypeSignal::overVoltageProtection);
-    Led::Off(Led::TypeSignal::overTemperatureProtection);
-
-    Hrpwm::DriverControl(Hrpwm::Channel::boost, Hrpwm::Status::enable);
-    Hrpwm::DriverControl(Hrpwm::Channel::buck, Hrpwm::Status::enable);
-
-    Hrpwm::SetDuty(Hrpwm::Channel::buck, 15000);   
-    Hrpwm::SetDuty(Hrpwm::Channel::boost, 29800); 
+    Application::Init();
 
     while(1) {
         tempInVoltage = Feedback::inputVoltage();

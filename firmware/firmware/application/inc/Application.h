@@ -21,11 +21,23 @@
 #include "Feedback.h"
 
 #include "Hrpwm.h"
+#include "Led.h"
 
 /********************************************************************************
  * Class 
  ********************************************************************************/
 
 class Application {
+    public:
+        struct StatusFlag {
+            static bool errorUVLO;
+        };
+
+    public:
+        static void Init();
+        
+    private:
+        static void StartApplicationTimer();
+        static bool UVLO (float reference);
 
 };
