@@ -1,7 +1,7 @@
 r
 h
-loadbin build\mppt.bin, 0x00
+loadbin build\buck_boost.bin, 0x00
 g
-verifybin build\mppt.bin, 0x00
+verifybin build\buck_boost.bin, 0x00
 r
 q

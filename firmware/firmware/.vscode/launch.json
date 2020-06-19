@@ -4,7 +4,7 @@
 		{
 			"name": "Cortex Debug",
 			"cwd": "${workspaceRoot}",
-			"executable": "./build/mppt.elf",
+			"executable": "./build/buck_boost.elf",
 			"svdFile": "./system/jlink/STM32F3x4.svd",
 			"request": "launch",
 			"type": "cortex-debug",
