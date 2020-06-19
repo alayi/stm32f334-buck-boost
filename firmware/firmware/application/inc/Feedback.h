@@ -27,19 +27,19 @@
 
 class Feedback {
     public:
-        static float inputVoltage() {
+        static float GetInputVoltage() {
             return (Feedback::voltageDiv * Feedback::sampleStepAdc * Adc::inputVoltage);
         };
 
-        static float inputCurrent() {
+        static float GetInputCurrent() {
             return (Adc::inputCurrent * Feedback::sampleStepAdc / Feedback::currentGain / Feedback::currentShunt);
         };
 
-        static float outputVoltage() {
+        static float GetOutputVoltage() {
             return (Feedback::voltageDiv * Feedback::sampleStepAdc * Adc::outputVoltage);
         };
 
-        static float outputCurrent() {
+        static float GetOutputCurrent() {
             return (Adc::outputCurrent * Feedback::sampleStepAdc / Feedback::currentGain / Feedback::currentShunt);
         };
 

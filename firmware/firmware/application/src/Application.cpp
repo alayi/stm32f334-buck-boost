@@ -54,7 +54,7 @@ void Application::StartApplicationTimer() {
 bool Application::UVLO (float reference) {
     float voltage = 0.0f;
     while (voltage < reference) {
-        voltage = Feedback::inputVoltage();
+        voltage = Feedback::GetInputVoltage();
     }
     return true;
 }
@@ -66,7 +66,7 @@ bool Application::UVLO (float reference) {
 void sTim3::handler (void) {
     TIM3->SR &= ~TIM_SR_UIF;
 
-    float outputVoltage = Feedback::outputVoltage();
+    float outputVoltage = Feedback::GetOutputVoltage();
 
     pidVoltageMode
         .SetReference(Application::referenceOutputVoltage)
