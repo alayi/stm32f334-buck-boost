@@ -27,7 +27,13 @@
 
 class Periphery {
     public:
-        static void Init (void) {
+        static void ResetHrpwmChannel() {
+            Gpio::Init<8,9,10,11>(GPIOA, Gpio::Mode::output, Gpio::Type::PP); 
+            Gpio::Reset<8,9,10,11>(GPIOA);
+        }
+
+        static void Init() {
+            Periphery::ResetHrpwmChannel();
             Clock::Init();
             Led::Init();
             Hrpwm::Init();
