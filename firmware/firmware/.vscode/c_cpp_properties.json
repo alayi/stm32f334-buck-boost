@@ -8,7 +8,8 @@
 				"C:/Software/EmbeddedGCC/arm_gcc/arm-none-eabi/include/sys/",
 				"C:/Software/EmbeddedGCC/arm_gcc/lib/**",
 
-				"${workspaceRoot}\\library\\**",
+                "${workspaceRoot}\\library\\cmsis\\**",
+                "${workspaceRoot}\\library\\dsp\\**",
 				"${workspaceRoot}\\application\\src\\**",
                 "${workspaceRoot}\\application\\inc\\**",
                 "${workspaceRoot}\\periphery\\inc\\**",

@@ -55,8 +55,8 @@ system/startup/ \
 library/cmsis/inc \
 application/inc \
 periphery/inc \
-library/
-
+library/cmsis \
+library/dsp
  
 #######################################
 # Flags
