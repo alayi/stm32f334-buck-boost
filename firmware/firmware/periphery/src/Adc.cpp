@@ -54,7 +54,7 @@ void Adc::StartCallibrationAdc() {
 void Adc::InitTimerEvent() {
     RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
     TIM6->PSC = 36-1;
-    TIM6->ARR = 1000;
+    TIM6->ARR = 100;
     TIM6->CR2 |= TIM_CR2_MMS_1;         // Enable generation TRGO for ADC
     TIM6->CR1  |= TIM_CR1_CEN;
 }
