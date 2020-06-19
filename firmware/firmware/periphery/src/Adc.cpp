@@ -70,9 +70,9 @@ void sAdc::handler (void) {
     Adc::inputCurrent = ADC1->JDR2;
     Adc::outputVoltage = ADC1->JDR3;
     Adc::outputCurrent = ADC1->JDR4;
-/*
-    Adc::step++;
-    if (Adc::step >= Adc::sizeBuffer) { Adc::step = 0; }
-*/
-    Gpio::Set<14>(GPIOB); 
+
+//    Adc::step++;
+//    if (Adc::step >= Adc::sizeBuffer) { Adc::step = 0; }
+
+//    Gpio::Set<14>(GPIOB); 
 }
