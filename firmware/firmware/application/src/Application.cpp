@@ -43,12 +43,12 @@ void Application::SetUserSettings (float uvlo, float referenceVoltage) {
 void Application::StartApplicationTimer() {
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;     
 
-	TIM3->PSC = 36-1;					
-	TIM3->ARR = 100;			
-	TIM3->DIER |= TIM_DIER_UIE;				
-	TIM3->CR1  |= TIM_CR1_CEN;	
+    TIM3->PSC = 36-1;
+    TIM3->ARR = 100;
+    TIM3->DIER |= TIM_DIER_UIE;
+    TIM3->CR1  |= TIM_CR1_CEN;
 
-    NVIC_EnableIRQ(TIM3_IRQn);			
+    NVIC_EnableIRQ(TIM3_IRQn);
 }
 
 bool Application::UVLO (float reference) {
@@ -75,7 +75,7 @@ void sTim3::handler (void) {
         .SetCoefficient(10,0,0,0,0)
         .Compute();
 
-        Application::duty += pidVoltageMode.Get();
-        Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::boostFixDuty);
-        Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::duty); 
+    Application::duty += pidVoltageMode.Get();
+    Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::boostFixDuty);
+    Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::duty); 
 }
