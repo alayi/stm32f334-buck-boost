@@ -36,8 +36,8 @@ class Application {
         static float limitUVLO;         
         static float referenceOutputVoltage;
         
-        constexpr static uint16_t boostFixDuty = 6000;
-        static uint16_t duty;
+        static uint16_t dutyBoost;
+        static uint16_t dutyBuck;
 
     public:
         static void Init();

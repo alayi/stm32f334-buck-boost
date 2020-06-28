@@ -73,6 +73,4 @@ void sAdc::handler (void) {
 
 //    Adc::step++;
 //    if (Adc::step >= Adc::sizeBuffer) { Adc::step = 0; }
-
-//    Gpio::Set<14>(GPIOB); 
 }

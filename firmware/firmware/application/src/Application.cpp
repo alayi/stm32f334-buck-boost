@@ -10,7 +10,8 @@
 
 bool Application::StatusFlag::errorUVLO = 0;
 
-uint16_t Application::duty = 0;
+uint16_t Application::dutyBuck = 0;
+uint16_t Application::dutyBoost = 0;
 float Application::limitUVLO = 0.0f;
 float Application::referenceOutputVoltage = 0.0f;
 
@@ -21,7 +22,7 @@ PidController pidVoltageMode;
  ********************************************************************************/
 
 void Application::Init() {
-    Application::SetUserSettings(3.0f, 12.0f);
+    Application::SetUserSettings(3.0f, 10.0f);
 
     Application::StatusFlag::errorUVLO = Application::UVLO(Application::limitUVLO);
     if (Application::StatusFlag::errorUVLO) {
@@ -66,6 +67,13 @@ bool Application::UVLO (float reference) {
 void sTim3::handler (void) {
     TIM3->SR &= ~TIM_SR_UIF;
 
+    float inputVoltage = Feedback::GetInputVoltage();
+    if (inputVoltage < 5.0f) { Application::dutyBoost = 6000; }
+    if ((inputVoltage >= 5.0f) && (inputVoltage < 8.0f)) { Application::dutyBoost = 10000; }
+    if ((inputVoltage >= 8.0f) && (inputVoltage < 12.0f)) { Application::dutyBoost = 15000; }
+    if (inputVoltage >= 12.0f) { Application::dutyBoost = 20000; }
+    Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::dutyBoost);
+
     float outputVoltage = Feedback::GetOutputVoltage();
 
     pidVoltageMode
@@ -75,7 +83,6 @@ void sTim3::handler (void) {
         .SetCoefficient(10,0,0,0,0)
         .Compute();
 
-    Application::duty += pidVoltageMode.Get();
-    Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::boostFixDuty);
-    Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::duty); 
+    Application::dutyBuck += pidVoltageMode.Get();
+    Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::dutyBuck); 
 }
