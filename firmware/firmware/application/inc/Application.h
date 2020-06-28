@@ -35,13 +35,14 @@ class Application {
 
         static float limitUVLO;         
         static float referenceOutputVoltage;
+        static float referenceOutputCurrent;
         
         static uint16_t dutyBoost;
         static uint16_t dutyBuck;
 
     public:
         static void Init();
-        static void SetUserSettings (float uvlo, float referenceVoltage);
+        static void SetUserSettings (float uvlo, float referenceVoltage, float referenceCurrent);
         
     private:
         static void StartApplicationTimer();

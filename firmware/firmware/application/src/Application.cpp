@@ -14,15 +14,17 @@ uint16_t Application::dutyBuck = 0;
 uint16_t Application::dutyBoost = 0;
 float Application::limitUVLO = 0.0f;
 float Application::referenceOutputVoltage = 0.0f;
+float Application::referenceOutputCurrent = 0.0f;
 
 PidController pidVoltageMode;
+PidController pidCurrentMode;
 
 /********************************************************************************
  * Class
  ********************************************************************************/
 
 void Application::Init() {
-    Application::SetUserSettings(3.0f, 10.0f);
+    Application::SetUserSettings(3.0f, 8.4f, 1.0f);
 
     Application::StatusFlag::errorUVLO = Application::UVLO(Application::limitUVLO);
     if (Application::StatusFlag::errorUVLO) {
@@ -36,9 +38,10 @@ void Application::Init() {
     Application::StartApplicationTimer();
 }
 
-void Application::SetUserSettings (float uvlo, float referenceVoltage) {
+void Application::SetUserSettings (float uvlo, float referenceVoltage, float referenceCurrent) {
     Application::limitUVLO = uvlo;
     Application::referenceOutputVoltage = referenceVoltage;
+    Application::referenceOutputCurrent = referenceCurrent;
 }
 
 void Application::StartApplicationTimer() {
@@ -74,15 +77,29 @@ void sTim3::handler (void) {
     if (inputVoltage >= 12.0f) { Application::dutyBoost = 20000; }
     Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::dutyBoost);
 
+    float result = 0.0f;
+
     float outputVoltage = Feedback::GetOutputVoltage();
+    float outputCurrent = Feedback::GetOutputCurrent();
 
-    pidVoltageMode
-        .SetReference(Application::referenceOutputVoltage)
-        .SetSaturation(-29800, 29800)
-        .SetFeedback(outputVoltage, 0.001)
-        .SetCoefficient(10,0,0,0,0)
-        .Compute();
+    if (outputVoltage < (Application::referenceOutputVoltage - 0.2f)) {
+        pidCurrentMode
+            .SetReference(Application::referenceOutputCurrent)
+            .SetSaturation(-29800, 29800)
+            .SetFeedback(outputCurrent, 0.001)
+            .SetCoefficient(10,0,0,0,0)
+            .Compute();
+        result = pidCurrentMode.Get();
+    } else {
+        pidVoltageMode
+            .SetReference(Application::referenceOutputVoltage)
+            .SetSaturation(-29800, 29800)
+            .SetFeedback(outputVoltage, 0.001)
+            .SetCoefficient(10,0,0,0,0)
+            .Compute();
+        result = pidVoltageMode.Get();
+    }
 
-    Application::dutyBuck += pidVoltageMode.Get();
+    Application::dutyBuck += result;
     Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::dutyBuck); 
 }

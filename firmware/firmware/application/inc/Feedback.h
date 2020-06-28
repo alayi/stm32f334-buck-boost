@@ -16,8 +16,8 @@
 /********************************************************************************
  * Class
  * 
- * Divider input voltage: 39 kOhm / 10 kOhm = 4.9
- * Divider output voltage: 39 kOhm / 10 kOhm = 4.9
+ * Divider input voltage: 39 kOhm / 10 kOhm + 1= 4.9
+ * Divider output voltage: 39 kOhm / 10 kOhm + 1 = 4.9
  * 
  * Gain input current: 20 kOhm / (1 kOhm + 1 kOhm) = 10
  * Gain output current: 20 kOhm / (1 kOhm + 1 kOhm) = 10
@@ -40,7 +40,7 @@ class Feedback {
         };
 
         static float GetOutputCurrent() {
-            return (Adc::outputCurrent * Feedback::sampleStepAdc / Feedback::currentGain / Feedback::currentShunt);
+            return (Adc::outputCurrent * Feedback::sampleStepAdc / Feedback::currentGain / Feedback::currentShunt + staticErrorOutputCurrent);
         };
 
     private:
@@ -48,4 +48,5 @@ class Feedback {
         constexpr static float sampleStepAdc = 0.000805f;
         constexpr static float currentGain = 10.0f;
         constexpr static float currentShunt = 0.05f;
+        constexpr static float staticErrorOutputCurrent = -0.1f;
 };
