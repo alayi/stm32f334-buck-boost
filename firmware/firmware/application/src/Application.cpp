@@ -71,9 +71,8 @@ void sTim3::handler (void) {
     TIM3->SR &= ~TIM_SR_UIF;
 
     float inputVoltage = Feedback::GetInputVoltage();
-    if (inputVoltage < 5.0f) { Application::dutyBoost = 6000; }
-    if ((inputVoltage >= 5.0f) && (inputVoltage < 8.0f)) { Application::dutyBoost = 10000; }
-    if ((inputVoltage >= 8.0f) && (inputVoltage < 12.0f)) { Application::dutyBoost = 15000; }
+    if (inputVoltage < 6.0f) { Application::dutyBoost = 15000; }
+    if ((inputVoltage >= 6.0f) && (inputVoltage < 12.0f)) { Application::dutyBoost = 18000; }
     if (inputVoltage >= 12.0f) { Application::dutyBoost = 20000; }
     Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::dutyBoost);
 
