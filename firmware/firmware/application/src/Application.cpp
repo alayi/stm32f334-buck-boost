@@ -89,7 +89,9 @@ void sTim3::handler (void) {
             .SetCoefficient(10,0,0,0,0)
             .Compute();
         result = pidCurrentMode.Get();
-    } else {
+    } 
+    
+    if ((outputCurrent < 0.05f) || (outputVoltage >= (Application::referenceOutputVoltage - 0.2f))) {
         pidVoltageMode
             .SetReference(Application::referenceOutputVoltage)
             .SetSaturation(-29800, 29800)
