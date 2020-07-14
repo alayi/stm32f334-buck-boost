@@ -19,9 +19,9 @@
  * Divider input voltage: 39 kOhm / 10 kOhm + 1= 4.9
  * Divider output voltage: 39 kOhm / 10 kOhm + 1 = 4.9
  * 
- * Gain input current: 20 kOhm / (1 kOhm + 1 kOhm) = 10
- * Gain output current: 20 kOhm / (1 kOhm + 1 kOhm) = 10
- * Current shunt: 0.05 Ohm
+ * Gain input current: 50
+ * Gain output current: 50
+ * Current shunt: 0.015 Ohm
  * 
  ********************************************************************************/
 
@@ -46,7 +46,7 @@ class Feedback {
     private:
         constexpr static float voltageDiv = 4.9f;
         constexpr static float sampleStepAdc = 0.000805f;
-        constexpr static float currentGain = 10.0f;
-        constexpr static float currentShunt = 0.05f;
+        constexpr static float currentGain = 50.0f;
+        constexpr static float currentShunt = 0.015f;
         constexpr static float staticErrorOutputCurrent = -0.1f;
 };
