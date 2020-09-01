@@ -16,35 +16,33 @@
 #include "stm32f3xx.h"
 #include "startupF334.h"
 
+#include "Hrpwm.h"
 #include "Pid.h"
-
 #include "Feedback.h"
 
-#include "Hrpwm.h"
-#include "Led.h"
-
 /********************************************************************************
- * Class 
+ * Class Application
+ * 
+ * High speed handler   -   2 kHz
+ * Low speed handler    -   1 Hz
+ * 
  ********************************************************************************/
 
 class Application {
-    public:
-        struct StatusFlag {
-            static bool errorUVLO;
-        };
-
-        static float limitUVLO;         
+    public:      
         static float referenceOutputVoltage;
         static float referenceOutputCurrent;
         
-        static uint16_t dutyBoost;
-        static uint16_t dutyBuck;
+        static uint16_t dutyResult;
+        static float inputVoltage;
+        static float outputVoltage;
+        static float outputCurrent;
 
     public:
         static void Init();
-        static void SetUserSettings (float uvlo, float referenceVoltage, float referenceCurrent);
+        static void SetUserSettings (float referenceVoltage, float referenceCurrent);
         
     private:
-        static void StartApplicationTimer();
-        static bool UVLO (float reference);
+        static void StartHighSpeedProcessing();
+        static void StartLowSpeedProcessing();
 };

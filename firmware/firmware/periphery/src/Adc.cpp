@@ -9,12 +9,17 @@
  * Variables
  ********************************************************************************/
 
-uint16_t Adc::inputVoltage;
-uint16_t Adc::inputCurrent;
-uint16_t Adc::outputVoltage;
-uint16_t Adc::outputCurrent;
+uint16_t Adc::inputVoltage [Adc::sizeBuffer];
+uint16_t Adc::inputCurrent [Adc::sizeBuffer];
+uint16_t Adc::outputVoltage [Adc::sizeBuffer];
+uint16_t Adc::outputCurrent [Adc::sizeBuffer];
 
-uint16_t Adc::step = 0;
+uint8_t Adc::step = 0;
+
+bool Adc::Status::stopInputVoltage = false;
+bool Adc::Status::stopInputCurrent = false;
+bool Adc::Status::stopOutputVoltage = false;
+bool Adc::Status::stopOutputCurrent = false;
 
 /********************************************************************************
  * Class ADC
@@ -53,8 +58,8 @@ void Adc::StartCallibrationAdc() {
 
 void Adc::InitTimerEvent() {
     RCC->APB1ENR |= RCC_APB1ENR_TIM6EN;
-    TIM6->PSC = 36-1;
-    TIM6->ARR = 100;
+    TIM6->PSC = 1-1;
+    TIM6->ARR = 36;
     TIM6->CR2 |= TIM_CR2_MMS_1;         // Enable generation TRGO for ADC
     TIM6->CR1  |= TIM_CR1_CEN;
 }
@@ -66,11 +71,11 @@ void Adc::InitTimerEvent() {
 void sAdc::handler (void) {
     ADC1->ISR |= ADC_ISR_JEOS;  
  
-    Adc::inputVoltage = ADC1->JDR1;
-    Adc::inputCurrent = ADC1->JDR2;
-    Adc::outputVoltage = ADC1->JDR3;
-    Adc::outputCurrent = ADC1->JDR4;
+    if (!Adc::Status::stopInputVoltage) { Adc::inputVoltage[Adc::step] = ADC1->JDR1; }
+    if (!Adc::Status::stopInputCurrent) { Adc::inputCurrent[Adc::step] = ADC1->JDR2; }
+    if (!Adc::Status::stopOutputCurrent) { Adc::outputCurrent[Adc::step] = ADC1->JDR3; }
+    if (!Adc::Status::stopOutputVoltage) { Adc::outputVoltage[Adc::step] = ADC1->JDR4; }
 
-//    Adc::step++;
-//    if (Adc::step >= Adc::sizeBuffer) { Adc::step = 0; }
+    if (Adc::step >= Adc::sizeBuffer) { Adc::step = 0; } 
+    Adc::step++;
 }

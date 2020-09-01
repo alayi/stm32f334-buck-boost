@@ -8,11 +8,8 @@
  * Variables
  ********************************************************************************/
 
-bool Application::StatusFlag::errorUVLO = 0;
+uint16_t Application::dutyResult = 0;
 
-uint16_t Application::dutyBuck = 0;
-uint16_t Application::dutyBoost = 0;
-float Application::limitUVLO = 0.0f;
 float Application::referenceOutputVoltage = 0.0f;
 float Application::referenceOutputCurrent = 0.0f;
 
@@ -24,83 +21,123 @@ PidController pidCurrentMode;
  ********************************************************************************/
 
 void Application::Init() {
-    Application::SetUserSettings(3.0f, 8.4f, 1.0f);
+    Application::SetUserSettings(8.0f, 1.0f);
 
-    Application::StatusFlag::errorUVLO = Application::UVLO(Application::limitUVLO);
-    if (Application::StatusFlag::errorUVLO) {
-        Hrpwm::SetDuty(Hrpwm::Channel::boost, 0);
-        Hrpwm::SetDuty(Hrpwm::Channel::buck, 0);
-        Hrpwm::DriverControl(Hrpwm::Channel::boost, Hrpwm::Status::enable);
-        Hrpwm::DriverControl(Hrpwm::Channel::buck, Hrpwm::Status::enable);
-        Led::On(Led::TypeSignal::status);
-    }
+    Hrpwm::SetDuty(Hrpwm::Channel::boost, 30000);
+    Hrpwm::SetDuty(Hrpwm::Channel::buck, 0);
 
-    Application::StartApplicationTimer();
+    Hrpwm::DriverControl(Hrpwm::Channel::boost, Hrpwm::Status::enable);
+    Hrpwm::DriverControl(Hrpwm::Channel::buck, Hrpwm::Status::enable);
+
+    Application::StartHighSpeedProcessing();
+    Application::StartLowSpeedProcessing();
 }
 
-void Application::SetUserSettings (float uvlo, float referenceVoltage, float referenceCurrent) {
-    Application::limitUVLO = uvlo;
+void Application::SetUserSettings (float referenceVoltage, float referenceCurrent) {
     Application::referenceOutputVoltage = referenceVoltage;
     Application::referenceOutputCurrent = referenceCurrent;
 }
 
-void Application::StartApplicationTimer() {
+void Application::StartHighSpeedProcessing() {
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;     
 
     TIM3->PSC = 36-1;
-    TIM3->ARR = 100;
+    TIM3->ARR = 200;
     TIM3->DIER |= TIM_DIER_UIE;
     TIM3->CR1  |= TIM_CR1_CEN;
 
     NVIC_EnableIRQ(TIM3_IRQn);
 }
 
-bool Application::UVLO (float reference) {
-    float voltage = 0.0f;
-    while (voltage < reference) {
-        voltage = Feedback::GetInputVoltage();
-    }
-    return true;
+void Application::StartLowSpeedProcessing() {
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;     
+
+    TIM2->PSC = 36000-1;
+    TIM2->ARR = 1000;
+    TIM2->DIER |= TIM_DIER_UIE;
+    TIM2->CR1  |= TIM_CR1_CEN;
+
+    NVIC_EnableIRQ(TIM2_IRQn);
 }
 
 /********************************************************************************
- * Application
+ * High speed processing #1
  ********************************************************************************/
 
 void sTim3::handler (void) {
     TIM3->SR &= ~TIM_SR_UIF;
 
-    float inputVoltage = Feedback::GetInputVoltage();
-    if (inputVoltage < 6.0f) { Application::dutyBoost = 15000; }
-    if ((inputVoltage >= 6.0f) && (inputVoltage < 12.0f)) { Application::dutyBoost = 18000; }
-    if (inputVoltage >= 12.0f) { Application::dutyBoost = 20000; }
-    Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::dutyBoost);
-
     float result = 0.0f;
 
+    float inputVoltage = Feedback::GetInputVoltage();
+    float inputCurrent = Feedback::GetInputCurrent();
     float outputVoltage = Feedback::GetOutputVoltage();
     float outputCurrent = Feedback::GetOutputCurrent();
 
-    if (outputVoltage < (Application::referenceOutputVoltage - 0.2f)) {
+    // Boost mode
+    if (inputVoltage < (Application::referenceOutputVoltage - 1.0f)) {
+        Hrpwm::SetDuty(Hrpwm::Channel::buck, 27000);
+
+        pidVoltageMode
+            .SetReference(Application::referenceOutputVoltage)
+            .SetSaturation(-29800, 29800)
+            .SetFeedback(outputVoltage, 0.002)
+            .SetCoefficient(20,0,0,0,0)
+            .Compute();
+        result = pidVoltageMode.Get();
+
+        Application::dutyResult += result;
+        Hrpwm::SetDuty(Hrpwm::Channel::boost, Application::dutyResult);
+    }
+
+    // Buck-boost mode
+    if ((inputVoltage >= (Application::referenceOutputVoltage - 1.0f)) && ((inputVoltage <= (Application::referenceOutputVoltage + 1.0f)))) {
+        Hrpwm::SetDuty(Hrpwm::Channel::boost, 9000);
+
+        pidVoltageMode
+            .SetReference(Application::referenceOutputVoltage)
+            .SetSaturation(-29800, 29800)
+            .SetFeedback(outputVoltage, 0.002)
+            .SetCoefficient(20,0,0,0,0)
+            .Compute();
+        result = pidVoltageMode.Get();
+
+        Application::dutyResult += result;
+        Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::dutyResult);
+    }
+
+    // Buck mode
+    if (inputVoltage > (Application::referenceOutputVoltage + 1.0f)) {
+        Hrpwm::SetDuty(Hrpwm::Channel::boost, 6000);
+
+        pidVoltageMode
+            .SetReference(Application::referenceOutputVoltage)
+            .SetSaturation(-29800, 29800)
+            .SetFeedback(outputVoltage, 0.002)
+            .SetCoefficient(20,0,0,0,0)
+            .Compute();
+        result = pidVoltageMode.Get();
+
+        Application::dutyResult += result;
+        Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::dutyResult);
+    }
+
+/*
         pidCurrentMode
             .SetReference(Application::referenceOutputCurrent)
             .SetSaturation(-29800, 29800)
             .SetFeedback(outputCurrent, 0.001)
-            .SetCoefficient(10,0,0,0,0)
+            .SetCoefficient(15,0,0,0,0)
             .Compute();
         result = pidCurrentMode.Get();
-    } 
-    
-    if ((outputCurrent < 0.05f) || (outputVoltage >= (Application::referenceOutputVoltage - 0.2f))) {
-        pidVoltageMode
-            .SetReference(Application::referenceOutputVoltage)
-            .SetSaturation(-29800, 29800)
-            .SetFeedback(outputVoltage, 0.001)
-            .SetCoefficient(10,0,0,0,0)
-            .Compute();
-        result = pidVoltageMode.Get();
-    }
+*/
 
-    Application::dutyBuck += result;
-    Hrpwm::SetDuty(Hrpwm::Channel::buck, Application::dutyBuck); 
+}
+
+/********************************************************************************
+ * Low speed processing #1
+ ********************************************************************************/
+
+void sTim2::handler (void) {
+    TIM2->SR &= ~TIM_SR_UIF;
 }

@@ -13,6 +13,7 @@ void Clock::Init (void) {
     RCC->CR |= RCC_CR_HSEON;                                    // Enable system for external crystall
     while (!(RCC->CR & RCC_CR_HSERDY));                         // Waiting flag about enable
     FLASH->ACR |= FLASH_ACR_LATENCY_1;                          // Latency for internal flash memory
+    RCC->CFGR2 |= RCC_CFGR2_PREDIV_0;                           // Divider crystal HSE/2
     RCC->CFGR  |= RCC_CFGR_PLLMUL9;                             // Select multiplier frequency for PLL x9
     RCC->CFGR  |= RCC_CFGR_PLLSRC;                              // Select source external crystall
     RCC->CFGR2 |= RCC_CFGR2_ADCPRE12_DIV10;                     // Select divider for ADC = AHB/10

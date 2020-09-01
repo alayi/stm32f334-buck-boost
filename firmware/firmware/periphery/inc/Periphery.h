@@ -34,8 +34,8 @@ class Periphery {
 
         static void Init() {
             Periphery::ResetHrpwmChannel();
-            Clock::Init();
             Led::Init();
+            Clock::Init();
             Hrpwm::Init();
             Adc::Init();
         }

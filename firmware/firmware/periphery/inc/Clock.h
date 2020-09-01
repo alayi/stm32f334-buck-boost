@@ -21,7 +21,7 @@
  *
  * Initialization for the clock's system
  * Source - external crystall
- * Frequency external crystal   - 8 000 000 Hz
+ * Frequency external crystal   - 16 000 000 Hz
  * Frequency for system clock   - 72 000 000 Hz
  * Divider for ADC clock system - 10
  * 

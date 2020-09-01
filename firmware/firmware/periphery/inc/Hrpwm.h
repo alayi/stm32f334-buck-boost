@@ -43,5 +43,5 @@ class Hrpwm {
         static void InitGpio();
 
     private:
-        constexpr static uint16_t periodHrpwm = 30000;     // Fsw = 102 kHz
+        constexpr static uint16_t periodHrpwm = 30000;     // Fsw = 207 kHz
 };

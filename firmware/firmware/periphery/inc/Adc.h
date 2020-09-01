@@ -32,11 +32,18 @@ class Adc {
     public:
         constexpr static uint16_t sizeBuffer = 50;
 
-        static uint16_t inputVoltage;
-        static uint16_t inputCurrent;
-        static uint16_t outputVoltage;
-        static uint16_t outputCurrent;
-        static uint16_t step;
+        static uint16_t inputVoltage [sizeBuffer];
+        static uint16_t inputCurrent [sizeBuffer];
+        static uint16_t outputVoltage [sizeBuffer];
+        static uint16_t outputCurrent [sizeBuffer];
+        static uint8_t step;
+
+        struct Status {
+            static bool stopInputVoltage;
+            static bool stopInputCurrent;
+            static bool stopOutputVoltage;
+            static bool stopOutputCurrent;
+        };
 
     public:
         static void Init();

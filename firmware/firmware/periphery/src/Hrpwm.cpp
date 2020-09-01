@@ -48,8 +48,8 @@ void Hrpwm::Init() {
 };
 
 void Hrpwm::SetDuty(Channel channel, uint16_t duty) {
-    if (channel == Hrpwm::Channel::buck)    { HRTIM1->sTimerxRegs[0].CMP1xR = duty; }
-    if (channel == Hrpwm::Channel::boost)   { HRTIM1->sTimerxRegs[1].CMP1xR = duty; }
+    if (channel == Hrpwm::Channel::boost) { HRTIM1->sTimerxRegs[0].CMP1xR = Hrpwm::periodHrpwm - duty; }
+    if (channel == Hrpwm::Channel::buck)  { HRTIM1->sTimerxRegs[1].CMP1xR = duty; }
 };
 
  void Hrpwm::InitGpio() {
@@ -58,9 +58,9 @@ void Hrpwm::SetDuty(Channel channel, uint16_t duty) {
 };
 
 void Hrpwm::DriverControl(Channel channel, Status status) {
-    if (channel == Hrpwm::Channel::buck && status == Hrpwm::Status::disable)  { Gpio::Reset<9>(GPIOA); }
-    if (channel == Hrpwm::Channel::buck && status == Hrpwm::Status::enable)   { Gpio::Set<9>(GPIOA); }
+    if (channel == Hrpwm::Channel::buck && status == Hrpwm::Status::disable)  { Gpio::Reset<11>(GPIOA); }
+    if (channel == Hrpwm::Channel::buck && status == Hrpwm::Status::enable)   { Gpio::Set<11>(GPIOA); }
 
-    if (channel == Hrpwm::Channel::boost && status == Hrpwm::Status::disable) { Gpio::Reset<11>(GPIOA); }
-    if (channel == Hrpwm::Channel::boost && status == Hrpwm::Status::enable)  { Gpio::Set<11>(GPIOA); }
+    if (channel == Hrpwm::Channel::boost && status == Hrpwm::Status::disable) { Gpio::Reset<9>(GPIOA); }
+    if (channel == Hrpwm::Channel::boost && status == Hrpwm::Status::enable)  { Gpio::Set<9>(GPIOA); }
 }

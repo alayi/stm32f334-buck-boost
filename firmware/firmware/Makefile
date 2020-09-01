@@ -37,12 +37,14 @@ library/cmsis/src/system_stm32f3xx.c
 
 CXX_SOURCES = \
 system/startup/startupF334.cpp \
-application/src/main.cpp \
-application/src/Application.cpp \
 periphery/src/Adc.cpp \
 periphery/src/Clock.cpp \
 periphery/src/Hrpwm.cpp \
-periphery/src/Led.cpp
+periphery/src/Led.cpp \
+application/src/main.cpp \
+application/src/Application.cpp \
+application/src/Feedback.cpp
+
 
 #######################################
 # Macros for GCC
